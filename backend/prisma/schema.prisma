@@ -1,0 +1,208 @@
+// =============================================
+// UAIFOOD - Modelagem de Banco com Prisma ORM
+// =============================================
+//
+// Este arquivo define toda a estrutura do banco de dados usando o Prisma ORM.
+// ===============================================================
+
+
+generator client {
+  provider = "prisma-client-js"
+  // Gera automaticamente o client para acessar o banco
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  // O banco é acessado via variável de ambiente
+}
+
+
+// ===============================================================
+// ENUMS/VALORES FIXOS
+// ===============================================================
+
+enum UserType {
+  CLIENT
+  ADMIN
+}
+
+enum PaymentMethod {
+  CASH
+  DEBIT
+  CREDIT
+  PIX
+}
+
+
+
+// ===============================================================
+// MODELS/TABELAS
+// ===============================================================
+
+
+// ===============================================================
+// USER
+// ===============================================================
+//
+// Representa qualquer usuário da plataforma (cliente ou admin).
+// Relacionamentos:
+//  - 1:1 com Address
+//  - 1:N com Order
+// ---------------------------------------------------------------
+
+model User {
+  id            Int        @id @default(autoincrement())
+  name          String
+  phone         String
+  email         String      @unique   // Garantia de e-mail único
+  password      String
+  type          UserType    // CLIENT ou ADMIN
+
+  address       Address?    // 1:1 — Address referencia userId único
+
+  // Pedidos feitos pelo cliente
+  clientOrders  Order[]     @relation("ClientOrders")
+
+  // Pedidos criados manualmente pelo admin
+  createdOrders Order[]     @relation("CreatedOrders")
+
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+
+
+// ===============================================================
+// ADDRESS
+// ===============================================================
+//
+// Endereço único por usuário (relação 1:1 com UNIQUE).
+// Vinculado pelo userId.
+// ---------------------------------------------------------------
+
+model Address {
+  id          Int       @id @default(autoincrement())
+  street      String
+  number      String
+  district    String
+  city        String
+  state       String
+  zipCode     String
+
+  userId      Int       @unique    // Apenas 1 endereço por usuário
+  user        User      @relation(fields: [userId], references: [id])
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+
+
+// ===============================================================
+// CATEGORY
+// ===============================================================
+//
+// Classificação dos itens do cardápio.
+// Cada categoria pode ter muitos itens.
+// ---------------------------------------------------------------
+
+model Category {
+  id          Int       @id @default(autoincrement())
+  description String
+
+  items       Item[]    // 1:N — vários itens pertencem a uma categoria
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+
+
+// ===============================================================
+// ITEM
+// ===============================================================
+//
+// Itens do cardápio
+// Relacionado a:
+// - uma categoria
+// - vários OrderItems (cada item pode aparecer em vários pedidos)
+// ---------------------------------------------------------------
+
+model Item {
+  id          Int       @id @default(autoincrement())
+  description String
+  unitPrice   Float
+  imageUrl    String?   // opcional — útil quando não tem imagem ainda
+
+  categoryId  Int
+  category    Category  @relation(fields: [categoryId], references: [id])
+
+  // Relacionamento com pedidos
+  orderItems  OrderItem[]
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+
+
+// ===============================================================
+// ORDER
+// ===============================================================
+//
+// Representa um pedido completo.
+// Cada pedido tem:
+// - cliente (obrigatório)
+// - createdBy (opcional: pedido criado manualmente por admin)
+// - vários OrderItems
+// - total calculado
+// ---------------------------------------------------------------
+
+model Order {
+  id            Int             @id @default(autoincrement())
+
+  clientId      Int
+  client        User             @relation("ClientOrders", fields: [clientId], references: [id])
+
+  createdById   Int?
+  createdBy     User?            @relation("CreatedOrders", fields: [createdById], references: [id])
+
+  paymentMethod PaymentMethod
+  status        String           @default("pending")
+
+  total         Float            @default(0)
+
+  orderItems    OrderItem[]
+
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+}
+
+
+
+// ===============================================================
+// ORDER_ITEM
+// ===============================================================
+//
+// Tabela pivô entre Order e Item.
+// Define:
+//  - qual item foi pedido
+//  - em qual pedido
+//  - quantidade do item
+// ---------------------------------------------------------------
+
+model OrderItem {
+  id        Int      @id @default(autoincrement())
+
+  orderId   Int
+  itemId    Int
+
+  quantity  Int      // quantidade de unidades compradas
+
+  order     Order    @relation(fields: [orderId], references: [id])
+  item      Item     @relation(fields: [itemId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
