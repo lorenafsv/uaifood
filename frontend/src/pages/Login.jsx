@@ -17,9 +17,6 @@ export default function Login() {
   // =====================================================================
   // ESTADOS DO COMPONENTE
   // =====================================================================
-  // - email e password armazenam os dados digitados
-  // - errorMsg exibe feedback amigável ao usuário
-  // =====================================================================
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
@@ -31,13 +28,9 @@ export default function Login() {
   // Fluxo:
   // 1. Cancela reload do form
   // 2. Envia requisição ao backend (/users/login)
-  // 3. Salva token no localStorage → persistência da sessão
+  // 3. Salva token no localStorage para persistência da sessão
   // 4. Atualiza contexto global com os dados do usuário
   // 5. Redireciona automaticamente para a Home
-  //
-  // Segurança:
-  // - Não exibimos erro detalhado vindo do backend para evitar vazamento
-  //   de informação sensível.
   // =====================================================================
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -49,7 +42,7 @@ export default function Login() {
         password,
       });
 
-      // Token persistido → usado no interceptor do axios
+      // Token persistido usado no interceptor do axios
       localStorage.setItem("authToken", res.data.token);
 
       // Atualiza usuário global (nome, id, type)
@@ -58,18 +51,12 @@ export default function Login() {
       // Redireciona
       navigate("/");
     } catch (err) {
-      // Mensagem genérica para evitar exposição de dados sensíveis
       setErrorMsg("E-mail ou senha incorretos.");
     }
   };
 
   // =====================================================================
   // RENDERIZAÇÃO
-  // =====================================================================
-  // Layout simples, limpo e responsivo.
-  // - Caixa centralizada
-  // - Feedback de erro caso login falhe
-  // - Link para registro
   // =====================================================================
   return (
     <div className="min-h-screen bg-red-50 flex items-center justify-center p-4">
@@ -80,7 +67,6 @@ export default function Login() {
           Uaifood 🍔
         </h1>
 
-        {/* Mensagem de erro, se existir */}
         {errorMsg && (
           <div className="bg-red-100 text-red-700 p-3 rounded-lg mb-4 text-center font-medium">
             {errorMsg}

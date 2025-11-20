@@ -23,18 +23,13 @@ export default function App() {
     // ======================================================================
     // CONTEXTOS GLOBAIS
     // ======================================================================
-    // AuthProvider → controla sessão do usuário (login, logout, /me)
-    // CartProvider → carrinho persistido no localStorage
+    // AuthProvider controla sessão do usuário (login, logout, /me)
+    // CartProvider, carrinho persistido no localStorage
     // Ambos envolvem TODA a aplicação para que qualquer componente possa usar
     // ======================================================================
     <AuthProvider>
       <CartProvider>
         <BrowserRouter>
-
-          {/* ================================================================
-              Navbar é fixa e aparece em todas as telas de usuário logado.
-              Em Login/Register ela também aparece, mas sem opções restritas.
-              ================================================================ */}
           <Navbar />
 
           <Routes>
@@ -134,10 +129,6 @@ export default function App() {
               }
             />
 
-            {/* ================================================================
-                ÚLTIMA ROTA: qualquer caminho desconhecido → redireciona para /
-                Boa prática: evita telas quebradas e melhora UX.
-                ============================================================== */}
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
 

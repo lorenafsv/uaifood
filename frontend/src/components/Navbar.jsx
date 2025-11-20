@@ -12,17 +12,13 @@ import API from "../api/api";
 // - Mostrar ações específicas, como carrinho, pedidos, categorias etc.
 // - Implementar o fluxo de logout limpando backend + frontend
 // - Garantir navegação fluida com React Router
-//
-// Observação:
-// A Navbar é um dos componentes mais importantes visualmente e funcionalmente,
-// pois tudo começa a partir dela: navegação, logout e acesso rápido ao carrinho.
 // ======================================================================
 
 export default function Navbar() {
   // Recupera usuário autenticado e setter global
   const { user, setUser } = useContext(AuthContext);
 
-  // Recupera carrinho global — usado para exibir o número de itens
+  // Recupera carrinho global - usado para exibir o número de itens
   const { cart } = useContext(CartContext);
 
   const navigate = useNavigate();
@@ -36,16 +32,14 @@ export default function Navbar() {
   // --------------------------------------------------------------
   const handleLogout = async () => {
     try {
-      await API.post("/users/logout"); // chama backend
+      await API.post("/users/logout");
     } catch (err) {
-      // Falha no backend não impede de deslogar localmente
       console.warn("Erro ao deslogar:", err);
     }
 
-    localStorage.removeItem("authToken"); // remove token local
-    setUser(null); // reseta contexto global
-
-    navigate("/login"); // volta para login
+    localStorage.removeItem("authToken");
+    setUser(null);
+    navigate("/login");
   };
 
   // --------------------------------------------------------------
@@ -54,7 +48,6 @@ export default function Navbar() {
   return (
     <nav className="bg-red-500 text-white p-4 flex justify-between items-center">
 
-      {/* LOGO / HOME */}
       <Link to="/" className="text-xl font-bold">
         Uaifood 🍔
       </Link>
@@ -63,9 +56,6 @@ export default function Navbar() {
 
         {/* ----------------------------------------------------------
            LINKS EXCLUSIVOS PARA ADMINISTRADORES
-           - Administração de categorias
-           - Administração de itens
-           - Administração de pedidos
            ---------------------------------------------------------- */}
         {user?.type === "ADMIN" && (
           <>
@@ -77,8 +67,6 @@ export default function Navbar() {
 
         {/* ----------------------------------------------------------
            LINKS EXCLUSIVOS PARA CLIENTES
-           - Meus pedidos pessoais
-           - Carrinho com contador (cart.length)
            ---------------------------------------------------------- */}
         {user?.type === "CLIENT" && (
           <>
@@ -89,8 +77,6 @@ export default function Navbar() {
 
         {/* ----------------------------------------------------------
            LINKS PARA QUALQUER USUÁRIO AUTENTICADO
-           - Perfil do usuário
-           - Botão de logout
            ---------------------------------------------------------- */}
         {user && (
           <>

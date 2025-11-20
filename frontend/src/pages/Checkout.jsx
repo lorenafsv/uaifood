@@ -10,24 +10,13 @@ export default function Checkout() {
   // =====================================================================
   // CONTEXTOS
   // =====================================================================
-  //
-  // - CartContext: carrinho e função para limpá-lo
-  // - AuthContext: dados do usuário (principalmente id e endereço)
-  //
-  // O Checkout depende de ambos: do carrinho e do usuário logado.
+  // O Checkout depende do carrinho e do usuário logado.
   // =====================================================================
   const { cart, clearCart } = useContext(CartContext);
   const { user } = useContext(AuthContext);
 
   // =====================================================================
   // ESTADOS LOCAIS
-  // =====================================================================
-  //
-  // - paymentMethod → método de pagamento escolhido
-  // - loading       → controla botão enquanto envia pedido
-  // - errorMsg      → mensagens amigáveis ao usuário
-  //
-  // Estado mínimo = componente simples de manter e debugar.
   // =====================================================================
   const [paymentMethod, setPaymentMethod] = useState("CREDIT");
   const [loading, setLoading] = useState(false);
@@ -36,19 +25,14 @@ export default function Checkout() {
   // =====================================================================
   // CÁLCULO DO TOTAL DO PEDIDO
   // =====================================================================
-  // Mesmo padrão usado no carrinho:
-  // soma = preço × quantidade
-  // =====================================================================
   const total = cart.reduce(
     (sum, item) => sum + item.unitPrice * item.quantity,
     0
   );
 
   // =====================================================================
-  // HANDLE CHECKOUT — regra central
+  // HANDLE CHECKOUT
   // =====================================================================
-  //
-  // Este é o fluxo principal da finalização do pedido:
   //
   // 1. Verifica se o carrinho está vazio
   // 2. Verifica se o cliente possui endereço cadastrado
@@ -56,9 +40,6 @@ export default function Checkout() {
   // 4. Envia para backend (/orders)
   // 5. Limpa carrinho
   // 6. Redireciona para histórico de pedidos (/orders)
-  //
-  // O objetivo é manter UX fluida e proteger o backend
-  // com mensagens de erro genéricas.
   // =====================================================================
   const handleCheckout = async () => {
     // (1) Carrinho vazio
@@ -79,7 +60,7 @@ export default function Checkout() {
     setErrorMsg("");
 
     try {
-      // (3) Monta corpo da requisição conforme contrato da API
+      // (3) Monta corpo da requisição
       const payload = {
         paymentMethod,
         items: cart.map((item) => ({
@@ -98,7 +79,6 @@ export default function Checkout() {
       navigate("/orders");
 
     } catch (err) {
-      // Erros específicos são ocultados → segurança e UX
       setErrorMsg("Erro ao finalizar pedido. Tente novamente.");
     } finally {
       setLoading(false);
@@ -107,8 +87,6 @@ export default function Checkout() {
 
   // =====================================================================
   // CASO O CARRINHO ESTEJA VAZIO
-  // =====================================================================
-  // Evita que o usuário veja tela de checkout improdutiva.
   // =====================================================================
   if (cart.length === 0) {
     return (

@@ -59,7 +59,7 @@ export default function Profile() {
   // ======================================================================
   // SALVAR ALTERAÇÕES DO PERFIL
   // ======================================================================
-  // - Remove campo password caso esteja vazio → evita sobrescrever senha
+  // - Remove campo password caso esteja vazio para evitar sobrescrever senha
   // - Após alterar, atualiza o contexto e exibe mensagem de sucesso
   // ======================================================================
   const handleSave = async (e) => {

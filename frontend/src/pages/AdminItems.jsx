@@ -11,11 +11,6 @@ import API from "../api/api";
 // - Criar itens
 // - Editar itens existentes
 // - Excluir itens
-//
-// Fluxo importante:
-// 1) Carrega itens + categorias em paralelo (Promise.all)
-// 2) Formulário permite "Criar" ou "Editar" baseado em editing
-// 3) Todos os erros do backend são tratados da mesma forma dos outros CRUDs
 // ======================================================================
 
 export default function AdminItems() {
@@ -23,7 +18,7 @@ export default function AdminItems() {
   // Lista de itens carregados do backend
   const [items, setItems] = useState([]);
 
-  // Lista de categorias (necessárias para selecionar categoryId do item)
+  // Lista de categorias
   const [categories, setCategories] = useState([]);
 
   // Estado do formulário
@@ -34,19 +29,14 @@ export default function AdminItems() {
     categoryId: "",
   });
 
-  // Se 'editing' tiver um ID → estamos editando o item
+  // Se 'editing' tiver um ID, estamos editando o item
   const [editing, setEditing] = useState(null);
 
-  // Controle de loading da página
   const [loading, setLoading] = useState(true);
 
-  // Mensagens de feedback para o usuário (sucesso/erro)
   const [msg, setMsg] = useState("");
 
-  // --------------------------------------------------------------------
-  // FUNÇÃO PRINCIPAL DE CARREGAMENTO
-  // --------------------------------------------------------------------
-  // Em vez de fazer 2 requisições separadas (items e categories),
+  // Em vez de fazer 2 requisições separadas
   // usamos Promise.all() para rodar em paralelo — melhora performance.
   // --------------------------------------------------------------------
   const loadData = () => {
@@ -70,9 +60,6 @@ export default function AdminItems() {
 
   // --------------------------------------------------------------------
   // SUBMISSÃO DO FORMULÁRIO DE CRIAÇÃO/EDIÇÃO
-  // --------------------------------------------------------------------
-  // Converte dados que precisam ser números, envia payload limpo,
-  // e trata os erros conforme padrão global.
   // --------------------------------------------------------------------
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -110,7 +97,6 @@ export default function AdminItems() {
       loadData();
 
     } catch (err) {
-      // Backend pode retornar array de erros ou mensagem única
       const errors = err.response?.data?.errors;
       const message = err.response?.data?.message || err.response?.data?.error;
 
@@ -126,9 +112,6 @@ export default function AdminItems() {
 
   // --------------------------------------------------------------------
   // EXCLUSÃO DE ITEM
-  // --------------------------------------------------------------------
-  // Confirmação evita exclusões acidentais.
-  // Após excluir, recarrega lista de itens.
   // --------------------------------------------------------------------
   const handleDelete = async (id) => {
     if (!confirm("Tem certeza que deseja excluir esse item?")) return;
@@ -146,7 +129,7 @@ export default function AdminItems() {
   // INICIAR MODO DE EDIÇÃO
   // --------------------------------------------------------------------
   // Preenche formulário com os dados do item selecionado.
-  // Habilita modo edição via editing = id.
+  // Habilita modo edição via editing.
   // --------------------------------------------------------------------
   const startEdit = (item) => {
     setEditing(item.id);

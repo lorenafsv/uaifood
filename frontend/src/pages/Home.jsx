@@ -9,11 +9,6 @@ export default function Home() {
   // =====================================================================
   //
   // - categories → contém TODAS as categorias vindas do backend
-  //   (cada categoria já vem com seus itens incluídos)
-  //
-  // - loading → controla a experiência enquanto os dados carregam
-  //
-  // O estado é simples porque o backend já entrega os dados organizados.
   // =====================================================================
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -25,10 +20,6 @@ export default function Home() {
   // O useEffect roda uma vez ao montar a página:
   // - Chama GET /categories
   // - Cada categoria já vem com sua lista de itens (include no backend)
-  // - Atualiza loading para evitar flicker na tela
-  //
-  // A Home NÃO trata autenticação porque qualquer usuário autenticado
-  // pode ver o cardápio (CLIENT e ADMIN).
   // =====================================================================
   useEffect(() => {
     API.get("/categories")
@@ -37,11 +28,6 @@ export default function Home() {
       .finally(() => setLoading(false));
   }, []);
 
-  // =====================================================================
-  // FEEDBACK VISUAL DURANTE O CARREGAMENTO
-  // =====================================================================
-  // Boa prática: evitar mostrar layout vazio enquanto os dados chegam.
-  // =====================================================================
   if (loading) {
     return (
       <div className="p-6 text-center text-lg font-semibold">
@@ -54,16 +40,8 @@ export default function Home() {
   // RENDERIZAÇÃO PRINCIPAL
   // =====================================================================
   //
-  // A Home lista:
   // - Nome de cada categoria
   // - Grid de itens (ItemCard) dentro de cada categoria
-  //
-  // O layout usa grid responsivo:
-  // - 2 colunas em telas pequenas
-  // - 3 colunas em sm
-  // - 4 colunas em lg
-  //
-  // Isso garante uma apresentação agradável em qualquer tamanho de tela.
   // =====================================================================
   return (
     <div className="p-6 space-y-8">

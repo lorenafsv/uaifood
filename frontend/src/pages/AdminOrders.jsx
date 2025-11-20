@@ -5,8 +5,8 @@ import API from "../api/api";
 // DEFINIÇÃO DO FLUXO DE STATUS DO PEDIDO
 // ======================================================================
 //
-// → O backend exige que o status avance em fluxo rígido:
-//   pending → preparing → delivering → delivered
+//  O backend exige que o status avance em fluxo rígido:
+//  pending - preparing - delivering - delivered
 //
 // - nextStatus: diz qual é o próximo status permitido
 // - statusLabels: rótulos amigáveis usados na UI
@@ -40,20 +40,15 @@ const statusColors = {
 // - Listar todos os pedidos (somente ADMIN)
 // - Exibir itens, cliente, total e status
 // - Avançar status do pedido seguindo fluxo controlado
-//
-// Importante: este componente NÃO permite retroceder status.
 // ======================================================================
 
 export default function AdminOrders() {
-  const [orders, setOrders] = useState([]);     // lista de pedidos
-  const [loading, setLoading] = useState(true); // indicador de carregamento inicial
-  const [msg, setMsg] = useState("");           // mensagem global de feedback
+  const [orders, setOrders] = useState([]);  
+  const [loading, setLoading] = useState(true); 
+  const [msg, setMsg] = useState("");
 
   // --------------------------------------------------------------------
   // FUNÇÃO QUE BUSCA TODOS OS PEDIDOS
-  // --------------------------------------------------------------------
-  // - Atualiza loading para UX responsiva
-  // - Em caso de erro, retorna lista vazia sem quebrar a UI
   // --------------------------------------------------------------------
   const loadOrders = () => {
     setLoading(true);
@@ -72,10 +67,6 @@ export default function AdminOrders() {
   // --------------------------------------------------------------------
   // AVANÇAR STATUS DO PEDIDO
   // --------------------------------------------------------------------
-  // - Chama o backend no endpoint PATCH /orders/status/:id
-  // - O backend calcula o próximo status e valida se o fluxo é permitido
-  // - Após sucesso → recarrega lista e exibe mensagem
-  // --------------------------------------------------------------------
   const updateStatus = async (id) => {
     try {
       await API.patch(`/orders/status/${id}`);
@@ -90,8 +81,6 @@ export default function AdminOrders() {
   // =====================================================================
   // RENDER
   // =====================================================================
-
-  // Estado inicial: carregando pedidos
   if (loading) {
     return <div className="p-6 text-center">Carregando pedidos...</div>;
   }
@@ -101,10 +90,8 @@ export default function AdminOrders() {
 
       <h1 className="text-3xl font-bold text-red-600">Gerenciar Pedidos 📦</h1>
 
-      {/* Feedback de sucesso/erro */}
       {msg && <div className="bg-green-100 text-green-700 p-3 rounded-lg">{msg}</div>}
 
-      {/* Caso não existam pedidos */}
       {orders.length === 0 ? (
         <p className="text-gray-500">Nenhum pedido encontrado.</p>
       ) : (
@@ -174,7 +161,7 @@ export default function AdminOrders() {
             ) : (
               // Quando o status é "delivered", não há próximo passo
               <p className="text-green-600 font-semibold text-center">
-                Pedido concluído ✔
+                Pedido concluído
               </p>
             )}
           </div>

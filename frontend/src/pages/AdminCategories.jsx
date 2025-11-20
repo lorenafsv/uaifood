@@ -10,27 +10,21 @@ import API from "../api/api";
 // - Editar categorias existentes
 // - Excluir categorias
 //
-// Regras importantes:
+// Regras:
 // - Apenas ADMIN acessa essa tela (rota protegida por ProtectedRoute)
 // - Backend valida descrição usando Zod
 // - Após qualquer operação (criar/editar/excluir), a lista é recarregada
-//
-// O estado *editing* controla se estamos editando ou criando.
 // ======================================================================
 
 export default function AdminCategories() {
-  const [categories, setCategories] = useState([]);   // lista das categorias
-  const [description, setDescription] = useState(""); // input do formulário
-  const [editing, setEditing] = useState(null);       // id da categoria em edição
-  const [loading, setLoading] = useState(true);       // UX: spinner de carregamento
-  const [msg, setMsg] = useState("");                 // mensagens de feedback
+  const [categories, setCategories] = useState([]);  
+  const [description, setDescription] = useState(""); 
+  const [editing, setEditing] = useState(null); 
+  const [loading, setLoading] = useState(true); 
+  const [msg, setMsg] = useState("");
 
   // -------------------------------------------------------------------
   // FUNÇÃO PARA BUSCAR CATEGORIAS DO BACKEND
-  // -------------------------------------------------------------------
-  // Regras:
-  // - Atualiza 'loading' para UX responsiva
-  // - Em caso de erro, retorna lista vazia (evita travar componente)
   // -------------------------------------------------------------------
   const loadCategories = () => {
     setLoading(true);
@@ -41,7 +35,6 @@ export default function AdminCategories() {
       .finally(() => setLoading(false));
   };
 
-  // Carrega categorias ao montar o componente
   useEffect(() => {
     loadCategories();
   }, []);
@@ -49,19 +42,6 @@ export default function AdminCategories() {
   // -------------------------------------------------------------------
   // CRIAR OU EDITAR CATEGORIA
   // -------------------------------------------------------------------
-  // Lógica:
-  // - Se tiver 'editing' → PUT
-  // - Caso contrário → POST
-  //
-  // Backend pode retornar:
-  // - message
-  // - error
-  // - errors: []
-  //
-  // Após salvar:
-  // - limpa formulário
-  // - recarrega lista
-  // - mostra mensagem ao usuário
   // -------------------------------------------------------------------
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -102,11 +82,6 @@ export default function AdminCategories() {
   // -------------------------------------------------------------------
   // EXCLUSÃO DE CATEGORIA
   // -------------------------------------------------------------------
-  // Detalhes importantes:
-  // - Confirmação de exclusão evita erros de UX
-  // - Após excluir, recarrega lista
-  // - Se categoria tem itens vinculados, backend pode impedir exclusão
-  // -------------------------------------------------------------------
   const handleDelete = async (id) => {
     if (!confirm("Tem certeza que deseja excluir esta categoria?")) return;
 
@@ -121,8 +96,6 @@ export default function AdminCategories() {
 
   // -------------------------------------------------------------------
   // INICIAR EDIÇÃO
-  // -------------------------------------------------------------------
-  // Preenche formulário com dados existentes para edição
   // -------------------------------------------------------------------
   const startEdit = (cat) => {
     setEditing(cat.id);

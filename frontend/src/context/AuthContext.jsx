@@ -10,9 +10,6 @@ import API from "../api/api";
 // - função de logout
 // - função para atualizar o usuário
 //
-// Isso permite que qualquer componente do frontend acesse esses dados
-// sem precisar repassar props manualmente.
-//
 export const AuthContext = createContext();
 
 // ======================================================================
@@ -30,16 +27,16 @@ export default function AuthProvider({ children }) {
   // FUNÇÃO DE LOGOUT
   // ====================================================================
   // Objetivo:
-  // - invalidar o token no backend (blacklist)
+  // - invalidar o token no backend
   // - limpar o token localmente
   // - resetar o estado global do usuário
   //
   const logout = async () => {
     try {
-      // Faz logout no backend (opcional para segurança)
+      // Faz logout no backend
       await API.post("/users/logout");
     } catch (err) {
-      // Mesmo que o backend falhe, o frontend deve remover o token
+      // Mesmo que o backend falhe, o frontend remove o token
       console.warn("Erro ao fazer logout no servidor:", err);
     }
 
@@ -53,13 +50,12 @@ export default function AuthProvider({ children }) {
   // ====================================================================
   // CARREGA USUÁRIO AUTOMATICAMENTE COM BASE NO TOKEN
   // ====================================================================
-  // Este useEffect é executado uma única vez ao iniciar o app.
   //
   // Fluxo:
   // 1. Verifica se existe token salvo
   // 2. Se existir, tenta buscar "/users/me"
-  // 3. Se der certo → usuário está autenticado
-  // 4. Se der erro → token expirou / inválido → remove token
+  // 3. Se der certo, usuário está autenticado
+  // 4. Se der erro, remove token
   //
   useEffect(() => {
     const token = localStorage.getItem("authToken");
@@ -81,7 +77,7 @@ export default function AuthProvider({ children }) {
         localStorage.removeItem("authToken");
         setUser(null);
       } finally {
-        // Libera a UI para renderizar
+        // Libera a interface para renderizar
         setLoading(false);
       }
     };

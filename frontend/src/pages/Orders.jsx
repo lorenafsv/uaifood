@@ -5,7 +5,7 @@ import API from "../api/api";
 // MAPEAMENTO VISUAL DOS STATUS DO PEDIDO
 // ======================================================================
 // - statusColors define estilos condizentes com cada estado
-// - statusLabels traduz valores técnicos para texto amigável
+// - statusLabels traduz o status
 // ======================================================================
 const statusColors = {
   pending: "bg-yellow-100 text-yellow-700",
@@ -25,17 +25,11 @@ export default function Orders() {
   // ======================================================================
   // ESTADOS
   // ======================================================================
-  // - orders: lista dos pedidos do cliente
-  // - loading: controle de carregamento
-  // ======================================================================
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // ======================================================================
   // UTILITÁRIO PARA CÁLCULO DO TOTAL
-  // ======================================================================
-  // - Garante fallback caso orderItems esteja null/undefined
-  // - Cálculo simples: soma de (preço × quantidade)
   // ======================================================================
   const calcTotal = (order) =>
     order.orderItems?.reduce(
@@ -47,7 +41,6 @@ export default function Orders() {
   // CARREGAMENTO INICIAL DOS PEDIDOS
   // ======================================================================
   // - Busca somente pedidos do usuário autenticado (/orders/my)
-  // - Em caso de erro, mostra lista vazia sem quebrar a UI
   // ======================================================================
   useEffect(() => {
     API.get("/orders/my")
@@ -85,11 +78,6 @@ export default function Orders() {
   // RENDERIZAÇÃO PRINCIPAL
   // ======================================================================
   // - Mostra a lista completa dos pedidos
-  // - Cada pedido exibe:
-  //     • status
-  //     • data
-  //     • itens
-  //     • total calculado
   // ======================================================================
   return (
     <div className="p-6 max-w-3xl mx-auto space-y-6">

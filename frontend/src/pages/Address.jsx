@@ -10,11 +10,6 @@ import { AuthContext } from "../context/AuthContext";
 // - Permitir cadastrar ou atualizar endereço
 // - Validar entrada por meio do backend (Zod no servidor)
 // - Sincronizar dados atualizados com o AuthContext (mantém coerência global)
-//
-// Regras importantes:
-// - Usuário só pode ter *um* endereço (model: Address userId UNIQUE)
-// - Se address.id existir → estamos atualizando
-// - Se address.id NÃO existir → estamos criando
 // ======================================================================
 
 export default function Address() {
@@ -72,8 +67,8 @@ export default function Address() {
   // SALVAR OU EDITAR ENDEREÇO
   // -------------------------------------------------------------------
   // Lógica:
-  // - Se houver address.id → PUT (atualização)
-  // - Senão → POST (criação)
+  // - Se houver address.id faz PUT (atualização)
+  // - Senão faz POST (criação)
   //
   // Após salvar, recarrega /users/me para atualizar o contexto global.
   // Isso garante que o AuthContext reflita o endereço atualizado.
@@ -85,8 +80,6 @@ export default function Address() {
 
     try {
       let res;
-
-      // Verifica se estamos atualizando ou criando
       if (address.id) {
         res = await API.put("/addresses", address);
         setMsgSuccess("Endereço atualizado!");
@@ -103,10 +96,6 @@ export default function Address() {
       setUser(me.data);
 
     } catch (err) {
-      // Backend pode retornar:
-      // - "message"
-      // - "error"
-      // - array: "errors: []"
       const errors = err.response?.data?.errors;
       const message = err.response?.data?.message || err.response?.data?.error;
 
@@ -127,9 +116,6 @@ export default function Address() {
 
   // -------------------------------------------------------------------
   // RENDERIZAÇÃO DO FORMULÁRIO
-  // -------------------------------------------------------------------
-  // Usa Object.keys(labels) para gerar inputs dinamicamente,
-  // reduzindo repetição e mantendo consistência.
   // -------------------------------------------------------------------
   return (
     <div className="p-6 max-w-lg mx-auto space-y-6">

@@ -8,7 +8,6 @@ export default function Register() {
   // ======================================================================
   // ESTADO DO FORMULÁRIO
   // ======================================================================
-  // - Armazena dados digitados pelo usuário
   // - Campo "type" é fixo como CLIENT para impedir criação arbitrária de ADMIN
   // ======================================================================
   const [form, setForm] = useState({
@@ -35,15 +34,6 @@ export default function Register() {
   // ======================================================================
   // SUBMISSÃO DO CADASTRO
   // ======================================================================
-  // Fluxo:
-  // 1. Limpa mensagens anteriores
-  // 2. Envia dados para /users/register
-  // 3. Exibe mensagem de sucesso
-  // 4. Redireciona automaticamente para /login
-  // ----------------------------------------------------------------------
-  // Observações:
-  // - Tratamento genérico de erro evita exposição de detalhes sensíveis
-  // - Backend pode retornar "message" OU "error"
   // ======================================================================
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -54,7 +44,6 @@ export default function Register() {
       await API.post("/users/register", form);
       setSuccessMsg("Conta criada com sucesso! Redirecionando...");
 
-      // pequena pausa para UX mais agradável
       setTimeout(() => navigate("/login"), 1500);
     } catch (err) {
       setErrorMsg(

@@ -8,12 +8,10 @@ export default function Cart() {
   // =====================================================================
   //
   // Aqui buscamos do contexto global todas as funções necessárias:
-  // - cart           → lista de itens
-  // - removeFromCart → remove item completamente
-  // - updateQuantity → aumenta/diminui quantidade (com limite mínimo = 1)
-  // - clearCart      → apaga o carrinho inteiro
-  //
-  // Essa separação torna o componente MUITO limpo e fácil de manter.
+  // - cart           lista de itens
+  // - removeFromCart remove item completamente
+  // - updateQuantity aumenta/diminui quantidade (com limite mínimo = 1)
+  // - clearCart      apaga o carrinho inteiro
   // =====================================================================
   const { cart, removeFromCart, updateQuantity, clearCart } =
     useContext(CartContext);
@@ -22,7 +20,6 @@ export default function Cart() {
   // CÁLCULO DO TOTAL DO PEDIDO
   // =====================================================================
   // O reduce percorre todos os itens somando total = preço × quantidade.
-  // O cálculo é feito sempre que cart mudar, pois cart é lido do contexto.
   // =====================================================================
   const total = cart.reduce(
     (sum, item) => sum + item.unitPrice * item.quantity,
@@ -31,9 +28,6 @@ export default function Cart() {
 
   // =====================================================================
   // CARINHO VAZIO
-  // =====================================================================
-  // Renderização condicional para UX melhor:
-  // Se não tem nenhum item, mostra mensagem amigável.
   // =====================================================================
   if (cart.length === 0) {
     return (
@@ -52,19 +46,6 @@ export default function Cart() {
 
   // =====================================================================
   // CARRINHO COM ITENS
-  // =====================================================================
-  //
-  // Exibe:
-  // - Imagem do item
-  // - Nome
-  // - Preço unitário
-  // - Controles de quantidade (+ e -)
-  // - Botão de remoção
-  //
-  // E ao final:
-  // - Total geral
-  // - Botão limpar carrinho
-  // - Link para checkout
   // =====================================================================
   return (
     <div className="p-6 space-y-6">
@@ -94,9 +75,6 @@ export default function Cart() {
 
             {/* ---------------------------------------------------------- */}
             {/* CONTROLES DE QUANTIDADE */}
-            {/* ---------------------------------------------------------- */}
-            {/* updateQuantity aplica Math.max(1, qty) no contexto,         */}
-            {/* então aqui podemos enviar (quantity - 1) sem quebrar nada. */}
             {/* ---------------------------------------------------------- */}
             <div className="flex items-center mt-2 gap-2">
               <button
